@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="theme-color" content="#07111f">
+  <title>StockPilot — Inventory Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="toast"></div>
+<div id="authView" class="auth-shell">
+  <div class="auth-visual">
+    <div class="brand large"><span class="logo-mark">S</span> StockPilot</div>
+    <div class="hero-copy">
+      <span class="eyebrow">INVENTORY INTELLIGENCE FOR INDIAN MSMEs</span>
+      <h1>Turn stock data into <em>decisions.</em></h1>
+      <p>Track inventory, understand sales, spot wastage risk and get practical business recommendations — from one premium workspace.</p>
+      <div class="trust-row"><span>✓ Multi-business</span><span>✓ Offline-ready</span><span>✓ Export reports</span></div>
+    </div>
+    <div class="orb orb1"></div><div class="orb orb2"></div>
+  </div>
+  <div class="auth-card-wrap">
+    <div class="auth-card">
+      <div class="mobile-brand brand"><span class="logo-mark">S</span> StockPilot</div>
+      <div id="authMessage" class="auth-message" aria-live="polite"></div>
+      <div id="loginPane">
+        <div class="auth-heading"><span class="eyebrow">WELCOME BACK</span><h2>Sign in to your workspace</h2><p>Manage your businesses from one place.</p></div>
+        <form id="loginForm">
+          <label>Email<input id="loginEmail" type="email" placeholder="you@business.com" required></label>
+          <label>Password<input id="loginPassword" type="password" placeholder="••••••••" required></label>
+          <button class="btn primary full">Enter workspace <span>→</span></button>
+        </form>
+        <div class="divider">OR</div>
+        <button class="btn ghost full" id="demoBtn">Explore demo workspace</button>
+        <p class="switch">New here? <button type="button" id="showSignup">Create an account</button></p>
+      </div>
+      <div id="signupPane" class="hidden">
+        <div class="auth-heading"><span class="eyebrow">GET STARTED</span><h2>Create your workspace</h2><p>Your workspace runs locally for this hackathon prototype.</p></div>
+        <form id="signupForm">
+          <label>Your name<input id="signupName" placeholder="Business owner" required></label>
+          <label>Email<input id="signupEmail" type="email" placeholder="you@business.com" required></label>
+          <label>Password<input id="signupPassword" type="password" minlength="6" placeholder="At least 6 characters" required></label>
+          <button class="btn primary full">Create workspace <span>→</span></button>
+        </form>
+        <p class="switch">Already have an account? <button type="button" id="showLogin">Sign in</button></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <div class="brand"><span class="logo-mark">S</span> StockPilot</div>
+    <div class="workspace-mini"><div class="mini-avatar" id="sideAvatar">D</div><div><b id="sideName">Business Owner</b><small id="sideBusiness">My Business</small></div><span>⌄</span></div>
+    <nav>
+      <button class="nav active" data-page="overview">◈ <span>Overview</span></button>
+      <button class="nav" data-page="inventory">▦ <span>Inventory</span></button>
+      <button class="nav" data-page="sales">↗ <span>Sales & Analytics</span></button>
+      <button class="nav" data-page="catalogue">▣ <span>Product Catalogue</span></button>
+      <button class="nav" data-page="businesses">⌘ <span>My Businesses</span></button>
+      <button class="nav" data-page="reports">▤ <span>Reports & Export</span></button>
+    </nav>
+    <div class="side-bottom">
+      <button class="nav" data-page="settings">⚙ <span>Profile & Settings</span></button>
+      <button class="nav" id="logoutBtn">↪ <span>Sign out</span></button>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <button id="mobileMenu" class="icon-btn">☰</button>
+      <div class="crumb"><span id="pageLabel">Overview</span><i>•</i><span id="businessLabel">My Business</span></div>
+      <div class="top-actions"><button class="icon-btn" id="chatOpen" title="Business AI">✦</button><div class="user-pill"><div class="avatar" id="topAvatar">D</div><span id="topName">Business Owner</span></div></div>
+    </header>
+
+    <section id="overview" class="page active-page">
+      <div class="page-head"><div><span class="eyebrow">BUSINESS PULSE</span><h1>Good evening, <span id="greetName">Owner</span>.</h1><p>Here’s what your inventory is telling you today.</p></div><button class="btn primary" data-action="add-sale">＋ Record sale</button></div>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-icon">₹</div><span>Revenue · this month</span><strong id="kpiRevenue">₹0</strong><small class="positive">↑ 12.8% vs last month</small></div>
+        <div class="kpi"><div class="kpi-icon">▦</div><span>Inventory value</span><strong id="kpiStock">₹0</strong><small>148 active SKUs</small></div>
+        <div class="kpi warning"><div class="kpi-icon">!</div><span>Wastage risk</span><strong id="kpiRisk">₹0</strong><small class="negative">14 items need attention</small></div>
+        <div class="kpi"><div class="kpi-icon">↗</div><span>Gross margin</span><strong id="kpiMargin">—</strong><small class="positive">↑ 2.1 pts</small></div>
+      </div>
+      <div class="grid-2">
+        <div class="panel chart-panel"><div class="panel-head"><div><h3>Sales performance</h3><p>Revenue across the last 6 months</p></div><select id="chartRange"><option>6 months</option><option>30 days</option></select></div><canvas id="salesChart"></canvas></div>
+        <div class="panel"><div class="panel-head"><div><h3>Risk radar</h3><p>Where money may be leaking</p></div><button class="text-btn" data-page="inventory">View all →</button></div><div id="riskList" class="risk-list"></div></div>
+      </div>
+      <div class="grid-2">
+        <div class="panel"><div class="panel-head"><div><h3>Smart recommendations</h3><p>Based on your sales & inventory data</p></div><span class="ai-badge">✦ AI INSIGHT</span></div><div id="recommendations" class="recommendations"></div></div>
+        <div class="panel"><div class="panel-head"><div><h3>Recent activity</h3><p>Latest changes in your workspace</p></div></div><div id="activity" class="activity"></div></div>
+      </div>
+    </section>
+
+    <section id="inventory" class="page">
+      <div class="page-head"><div><span class="eyebrow">STOCK CONTROL</span><h1>Inventory</h1><p>Know what you have, what is moving and what is at risk.</p></div><button class="btn primary" data-action="add-product">＋ Add product</button></div>
+      <div class="toolbar"><div class="search"><span>⌕</span><input id="inventorySearch" placeholder="Search SKU, product or category…"></div><select id="riskFilter"><option value="all">All risk levels</option><option value="high">High risk</option><option value="medium">Medium risk</option><option value="low">Low risk</option></select><button class="btn ghost" data-action="scan">▣ Scan product photo</button></div>
+      <div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>SKU</th><th>STOCK</th><th>UNIT COST</th><th>VALUE</th><th>SALES VELOCITY</th><th>RISK</th><th></th></tr></thead><tbody id="inventoryBody"></tbody></table></div></div>
+    </section>
+
+    <section id="sales" class="page">
+      <div class="page-head"><div><span class="eyebrow">REVENUE INTELLIGENCE</span><h1>Sales & Analytics</h1><p>Understand demand before you buy or produce more.</p></div><button class="btn primary" data-action="add-sale">＋ Record sale</button></div>
+      <div class="analytics-grid"><div class="panel chart-panel large-chart"><div class="panel-head"><div><h3>Revenue trend</h3><p>Monthly revenue and order volume</p></div></div><canvas id="revenueChart"></canvas></div><div class="panel chart-panel"><div class="panel-head"><div><h3>Category mix</h3><p>Share of sales revenue</p></div></div><canvas id="categoryChart"></canvas></div></div>
+      <div class="grid-2"><div class="panel"><div class="panel-head"><div><h3>Business signals</h3><p>Metrics to watch</p></div></div><div class="signal-grid"><div><b>62%</b><span>repeat orders</span></div><div><b>4.7d</b><span>avg. stock cover</span></div><div><b>8.2%</b><span>slow stock value</span></div><div><b>2.4%</b><span>estimated wastage</span></div></div></div><div class="panel"><div class="panel-head"><div><h3>Top products</h3><p>By revenue this month</p></div></div><div id="topProducts" class="rank-list"></div></div></div>
+    </section>
+
+    <section id="catalogue" class="page">
+      <div class="page-head"><div><span class="eyebrow">VISUAL CATALOGUE</span><h1>Product Catalogue</h1><p>Capture product details from a photo, then review before adding.</p></div><button class="btn primary" data-action="scan">＋ Add from photo</button></div>
+      <div class="catalog-hero"><div><span class="eyebrow">PHOTO → PRODUCT</span><h2>Build your catalogue faster.</h2><p>Upload a product photo or use your camera. StockPilot creates a draft with the fields you can review and edit before saving.</p><button class="btn light" data-action="scan">Upload / capture photo</button></div><div class="scan-illustration"><div class="scan-box">＋<span>PRODUCT</span></div></div></div>
+      <div id="catalogGrid" class="catalog-grid"></div>
+    </section>
+
+    <section id="businesses" class="page">
+      <div class="page-head"><div><span class="eyebrow">WORKSPACES</span><h1>My Businesses</h1><p>Keep separate inventory, sales and reports for every business.</p></div><button class="btn primary" data-action="add-business">＋ Add business</button></div>
+      <div id="businessGrid" class="business-grid"></div>
+    </section>
+
+    <section id="reports" class="page">
+      <div class="page-head"><div><span class="eyebrow">EXPORT CENTRE</span><h1>Reports & Export</h1><p>Take your business data with you — PDF, PowerPoint or Word.</p></div></div>
+      <div class="report-grid"><div class="report-card"><div class="report-icon">PDF</div><h3>Executive PDF</h3><p>Revenue, inventory value, risk items and recommendations.</p><button class="btn primary" data-export="pdf">Download PDF</button></div><div class="report-card"><div class="report-icon">PPT</div><h3>Pitch deck</h3><p>Clean presentation-ready summary for owners, partners or mentors.</p><button class="btn primary" data-export="ppt">Download PowerPoint</button></div><div class="report-card"><div class="report-icon">DOC</div><h3>Business report</h3><p>Editable Word report with operational findings and actions.</p><button class="btn primary" data-export="doc">Download Word</button></div></div>
+      <div class="panel report-preview"><div class="panel-head"><div><h3>Report preview</h3><p>Current workspace snapshot</p></div><span class="status-dot">Live data</span></div><div id="reportPreview"></div></div>
+    </section>
+
+    <section id="settings" class="page">
+      <div class="page-head"><div><span class="eyebrow">YOUR WORKSPACE</span><h1>Profile & Settings</h1><p>Make your workspace feel like your business.</p></div></div>
+      <div class="settings-grid"><div class="panel profile-card"><div class="profile-avatar" id="profileAvatar">D</div><input type="file" id="avatarInput" accept="image/*" hidden><button class="btn ghost" id="avatarBtn">Change profile photo</button><h2 id="profileName">Business Owner</h2><p id="profileEmail"></p></div><div class="panel"><div class="form-grid"><label>Display name<input id="settingsName" value="Business Owner"></label><label>Default business<input id="settingsBusiness" value="My Business"></label><label class="wide">Business description<textarea id="settingsDescription"></textarea></label></div><button class="btn primary" id="saveSettings">Save profile</button></div></div>
+    </section>
+  </main>
+</div>
+
+<div id="chatPanel" class="chat-panel hidden"><div class="chat-head"><div><b>StockPilot Copilot <span class="ai-live-dot">●</span></b><small>AI business & inventory operations assistant</small></div><button class="icon-btn" id="chatClose">×</button></div><div id="chatMessages" class="chat-messages"><div class="bubble bot"><b>Hi! I’m your StockPilot Copilot.</b><br>I can explain this dashboard, analyse your inventory/sales, suggest actions, or answer practical MSME questions.</div></div><div class="suggestions"><button>Which products are risky?</button><button>How can I reduce wastage?</button><button>Explain my sales trend</button></div><form id="chatForm"><input id="chatInput" placeholder="Ask about your business…"><button>↑</button></form></div>
+
+<div id="modal" class="modal hidden"><div class="modal-card"><button class="modal-close">×</button><div id="modalContent"></div></div></div>
+<script src="app.js?v=4"></script>
+</body></html>

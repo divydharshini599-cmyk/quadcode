@@ -1,0 +1,13 @@
+{
+  "name": "stockpilot-inventory-intelligence",
+  "version": "4.0.0",
+  "private": true,
+  "description": "StockPilot — inventory intelligence and AI copilot for Indian MSMEs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
